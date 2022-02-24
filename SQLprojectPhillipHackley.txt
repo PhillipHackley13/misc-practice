@@ -1,0 +1,210 @@
+CREATE DATABASE BIRDS;
+GO
+
+USE BIRDS;
+
+CREATE TABLE Names
+(CommonName VARCHAR(20) NOT NULL,
+SciName VARCHAR(30) NOT NULL,
+OrderName VARCHAR(15) NOT NULL,
+FamilyName VARCHAR(15) NOT NULL,
+CONSTRAINT PK_Names PRIMARY KEY (CommonName));
+
+INSERT INTO Names(CommonName,SciName,OrderName,FamilyName)
+VALUES('Red-tailed-Hawk','Buteo-jamaicensis','Accipitriformes','Accipitridae');
+INSERT INTO Names(CommonName,SciName,OrderName,FamilyName)
+VALUES('Barn-Owl','Tyto-alba','Strigiformes','Tytonidae');
+INSERT INTO Names(CommonName,SciName,OrderName,FamilyName)
+VALUES('Common-Raven','Corvus-corax','Passeriformes','Corvidae');
+INSERT INTO Names(CommonName,SciName,OrderName,FamilyName)
+VALUES('Northern-Cardinal','Cardinalis-cardinalis','Passeriformes','Cardinalidae');
+INSERT INTO Names(CommonName,SciName,OrderName,FamilyName)
+VALUES('Black-Vulture','Coragyps-atratus','Cathartiformes','Cathartidae');
+
+USE BIRDS;
+
+CREATE TABLE Habitat
+(Habitat_Type VARCHAR(20) NOT NULL,
+Diet VARCHAR(15) NOT NULL,
+CommonName VARCHAR(20) NOT NULL,
+CONSTRAINT PK_Habitat PRIMARY KEY(Habitat_Type),
+CONSTRAINT Habitat_CommonName_fk FOREIGN KEY (CommonName)
+    REFERENCES Names(CommonName)); 
+
+INSERT INTO Habitat(Habitat_Type,Food,CommonName)
+VALUES('Open-WoodLands','Small-Animals','Red-tailed-Hawk');
+INSERT INTO Habitat(Habitat_Type,Food,CommonName)
+VALUES('Grasslands','Mammals','Barn-Owl');
+INSERT INTO Habitat(Habitat_Type,Food,CommonName)
+VALUES('Forests','Omnivore','Common-Raven');
+INSERT INTO Habitat(Habitat_Type,Food,CommonName)
+VALUES('Fields','Seeds','Northern-Cardinal');
+INSERT INTO Habitat(Habitat_Type,Food,CommonName)
+VALUES('Meadows','Carrion','Black-Vulture');
+
+
+USE BIRDS;
+
+CREATE TABLE Behavior
+(Food VARCHAR(15) NOT NULL,
+Nesting VARCHAR(30) NOT NULL,
+CommonName VARCHAR(20) NOT NULL,
+CONSTRAINT PK_Behavior PRIMARY KEY(Food),
+CONSTRAINT Behavior_CommonName_fk FOREIGN KEY (CommonName)
+    REFERENCES Names(CommonName));
+
+
+INSERT INTO Behavior
+VALUES('Small-Animals','Tree','Red-tailed-Hawk');
+INSERT INTO Behavior
+VALUES('Mammals','Building','Barn-Owl');
+INSERT INTO Behavior
+VALUES('Omnivore','Cliff','Common-Raven');
+INSERT INTO Behavior
+VALUES('Seeds','Shrub','Northern-Cardinal');
+INSERT INTO Behavior
+VALUES('Carrion','Cliff','Black-Vulture');
+
+
+USE BIRDS;
+
+CREATE TABLE Body
+(ColorPattern VARCHAR(15) NOT NULL,
+Size VARCHAR(15) NOT NULL,
+Weight VARCHAR(20) NOT NULL,
+CommonName VARCHAR(20) NOT NULL,
+CONSTRAINT PK_Body PRIMARY KEY(ColorPattern),
+CONSTRAINT Body_CommonName_fk FOREIGN KEY (CommonName)
+    REFERENCES Names(CommonName));
+
+
+INSERT INTO Body
+VALUES('Speckled','Small','8kg','Red-tailed-Hawk');
+INSERT INTO Body
+VALUES('Rainbow','Medium','10kg','Barn-Owl');
+INSERT INTO Body
+VALUES('Obsidian','Medium','15kg','Common-Raven');
+INSERT INTO Body
+VALUES('Ruby-Red','Small','7kg','Northern-Cardinal');
+INSERT INTO Body
+VALUES('Onyx','Large','30kg','Black-Vulture');
+
+
+USE BIRDS;
+
+CREATE TABLE Wing
+(FeatherType VARCHAR(15) NOT NULL,
+WingSpan VARCHAR(10) NOT NULL,
+CommonName VARCHAR(20) NOT NULL,
+CONSTRAINT PK_Wing PRIMARY KEY(FeatherType),
+CONSTRAINT Wing_CommonName_fk FOREIGN KEY (CommonName)
+    REFERENCES Names(CommonName));
+
+INSERT INTO Wing
+VALUES('Fluffy','114cm','Red-tailed-Hawk');
+INSERT INTO Wing
+VALUES('Super-Soft','125cm','Barn-Owl');
+INSERT INTO Wing
+VALUES('Silky','116cm','Common-Raven');
+INSERT INTO Wing
+VALUES('Rough','25cm','Northern-Cardinal');
+INSERT INTO Wing
+VALUES('Tough','137cm','Black-Vulture');
+
+
+USE BIRDS;
+
+CREATE TABLE Tail
+(TailShape VARCHAR(15) NOT NULL,
+TailSize VARCHAR(10) NOT NULL,
+CommonName VARCHAR(20) NOT NULL,
+CONSTRAINT PK_Tail PRIMARY KEY(TailShape),
+CONSTRAINT Tail_CommonName_fk FOREIGN KEY (CommonName)
+    REFERENCES Names(CommonName));
+
+ 
+
+INSERT INTO Tail
+VALUES('Rounded','60','Red-tailed-Hawk');
+INSERT INTO Tail
+VALUES('Square','50cm','Barn-Owl');
+INSERT INTO Tail
+VALUES('Boat-Tailed','40','Common-Raven');
+INSERT INTO Tail
+VALUES('Spherical','10cm','Northern-Cardinal');
+INSERT INTO Tail
+VALUES('Oval','20','Black-Vulture');
+#End of script
+
+#15 Queries Begin
+
+1.
+SELECT Names.CommonName,SciName,FamilyName,Food,Nesting
+FROM Names JOIN Behavior ON Names.CommonName = Behavior.CommonName;
+2.
+SELECT Names.CommonName,SciName,FamilyName,Food,Nesting,ColorPattern,Size,Body.Weight
+FROM Names JOIN Behavior ON Names.CommonName = Behavior.CommonName 
+JOIN Body ON Behavior.CommonName = Body.CommonName;
+3.
+SELECT Names.CommonName,SciName,FamilyName,Food,Nesting,ColorPattern,Size,Body.Weight,TailShape
+FROM Names JOIN Behavior ON Names.CommonName = Behavior.CommonName 
+JOIN Body ON Behavior.CommonName = Body.CommonName
+JOIN Tail ON Body.CommonName = Tail.CommonName
+4.
+SELECT Names.CommonName,SciName,FamilyName,Food,Nesting,ColorPattern,Size,Body.Weight,TailShape,Habitat_Type,Diet
+FROM Names JOIN Behavior ON Names.CommonName = Behavior.CommonName 
+JOIN Body ON Behavior.CommonName = Body.CommonName
+JOIN Tail ON Body.CommonName = Tail.CommonName
+JOIN Habitat ON Tail.CommonName = Habitat.CommonName
+5.
+SELECT Names.CommonName,SciName,OrderName,FamilyName,Weight
+FROM Names JOIN Body ON Names.CommonName = Body.CommonName
+WHERE Weight = '30kg'
+
+6.
+SELECT *
+FROM Names 
+WHERE CommonName = 'Common-Raven'
+
+7.
+SELECT *
+FROM Names JOIN Wing ON Names.CommonName = Wing.CommonName
+WHERE Names.CommonName = 'Red-Tailed-Hawk'
+8.
+SELECT *
+FROM Names JOIN Wing ON Names.CommonName = Wing.CommonName
+WHERE Names.CommonName = 'Red-Tailed-Hawk' OR Names.CommonName = 'Common-Raven'
+
+9.
+SELECT Names.CommonName,SciName,OrderName,FamilyName,FeatherType,WingSpan
+FROM Names JOIN Wing ON Names.CommonName = Wing.CommonName
+ORDER BY Names.CommonName
+
+10.
+SELECT FamilyName,FeatherType,WingSpan,Habitat_Type,Diet
+FROM Names JOIN Wing ON Names.CommonName = Wing.CommonName JOIN Habitat ON Wing.CommonName= Habitat.CommonName
+ORDER BY Names.FamilyName
+
+11.
+SELECT Names.CommonName,SciName,FamilyName,FeatherType,WingSpan,Habitat_Type,Diet,Nesting
+FROM Names JOIN Wing ON Names.CommonName = Wing.CommonName JOIN Habitat ON Wing.CommonName= Habitat.CommonName JOIN Behavior ON Habitat.CommonName = Behavior.CommonName
+ORDER BY Habitat_Type
+
+12.
+SELECT UPPER(Names.CommonName),LOWER(SciName),CONCAT(FamilyName,+' ', FeatherType) AS Abomination ,WingSpan,Habitat_Type,Diet,Nesting
+FROM Names JOIN Wing ON Names.CommonName = Wing.CommonName JOIN Habitat ON Wing.CommonName= Habitat.CommonName JOIN Behavior ON Habitat.CommonName = Behavior.CommonName
+ORDER BY Habitat_Type
+
+13.
+SELECT Names.CommonName,Substring(SciName,1,6) AS SubstringExample, FamilyName,OrderName
+FROM Names
+ORDER BY Names.SciName Desc;
+14.
+SELECT COUNT(Names.CommonName) AS CountExample, SciName
+FROM Names
+GROUP BY SciName
+
+15.
+SELECT MAX(Names.CommonName) AS AscExample,SciName,MIN(OrderName) AS DescExample,COUNT(FamilyName) AS CountingThings
+FROM Names
+GROUP BY SciName
