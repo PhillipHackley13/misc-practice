@@ -1,0 +1,77 @@
+Short project for practice and the demonstration of basic knowledge regarding inner joins, left joins, right joins, self joins, cross joins, union statements, and union all.
+
+
+
+
+
+
+Query #1
+
+#Inner Joins return matching values from both tables
+
+SELECT o.itemid, c.customername
+FROM orderinfo AS o
+INNER JOIN customer AS c ON o.customerid=c.customerid;
+
+Query #2
+
+SELECT i.booktitle, a.authorname
+FROM author AS a
+INNER JOIN item AS i ON i.authorid= a.authorid;
+
+Query #3
+
+#Left Joins return all the values from the left table and the corresponsing matched from the right table. If there is no match from the right table, value returned will be null
+
+SELECT i.booktitle, a.authorname
+FROM item AS i
+LEFT JOIN author AS a ON i.authorid= a.authorid
+ORDER BY i.booktitle;
+
+Query #4
+
+SELECT c.customername, o.itemid
+FROM customer AS c 
+LEFT JOIN orderinfo AS o ON c.customerid = o.customerid
+ORDER BY customername;
+
+Query #5
+
+#Right Joins return all values from the right table. The corresponding values from the left table will also be returned. If there is no matching left value, a null value will be returned.
+
+SELECT o.itemid, c.customername
+FROM orderinfo as o
+RIGHT JOIN customer as c on o.customerid=c.customerid
+ORDER BY c.customername;
+
+Query #6
+
+SELECT a.authorname, i.booktitle
+FROM author AS a
+RIGHT JOIN item AS i ON a.authorid = i.authorid
+ORDER BY a.authorname;
+
+
+
+
+A SELF JOIN is when a table joins to itself and used when a table is referencing itself
+
+
+Query #7
+
+A UNION Allows you to write multiple SELECT statements and retrieve only unique values, removing duplicates from your query. Only retrieves unique and distinct values
+
+SELECT city FROM customer
+UNION
+SELECT city FROM supplier
+ORDER BY city;
+
+Query #8
+
+A UNION ALL statement will retrieve all values specified within each SELECT statement. Not seeking unique or distinct values but including everything.
+
+SELECT city FROM customer
+UNION ALL
+SELECT city FROM supplier
+ORDER BY city;
+
